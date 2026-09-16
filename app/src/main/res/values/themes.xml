@@ -1,0 +1,9 @@
+<resources>
+    <style name="Theme.A2ZInvoices" parent="android:style/Theme.Material.Light.NoActionBar">
+        <item name="android:fontFamily">sans</item>
+        <item name="android:colorAccent">#1F4E8C</item>
+        <item name="android:navigationBarColor">#FFFFFF</item>
+        <item name="android:statusBarColor">#173A66</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+</resources>

@@ -1,0 +1,10 @@
+package com.a2zinvoices.app;
+import org.json.*; import java.util.*; import java.text.*;
+public class Invoice {
+ public String id=UUID.randomUUID().toString(),number="",date="",customerId="",customerName="",customerActivity="",customerAddress="",customerCommercialRegister="",customerTaxId="",paymentMethod="نقدا"; public double vatRate=17,fiscalStamp=0; public ArrayList<InvoiceLine> lines=new ArrayList<>();
+ public double subTotal(){double x=0;for(InvoiceLine l:lines)x+=l.total();return Math.round(x*100)/100.0;}
+ public double vatAmount(){return Math.round(subTotal()*vatRate/100*100)/100.0;}
+ public double grandTotal(){return Math.round((subTotal()+vatAmount()+fiscalStamp)*100)/100.0;}
+ public JSONObject toJson(){JSONObject o=new JSONObject();try{o.put("id",id);o.put("number",number);o.put("date",date);o.put("customerId",customerId);o.put("customerName",customerName);o.put("customerActivity",customerActivity);o.put("customerAddress",customerAddress);o.put("customerCommercialRegister",customerCommercialRegister);o.put("customerTaxId",customerTaxId);o.put("vatRate",vatRate);o.put("fiscalStamp",fiscalStamp);o.put("paymentMethod",paymentMethod);JSONArray a=new JSONArray();for(InvoiceLine l:lines)a.put(l.toJson());o.put("lines",a);}catch(Exception ignored){}return o;}
+ public static Invoice fromJson(JSONObject o){Invoice i=new Invoice();i.id=o.optString("id",i.id);i.number=o.optString("number","");i.date=o.optString("date","");i.customerId=o.optString("customerId","");i.customerName=o.optString("customerName","");i.customerActivity=o.optString("customerActivity","");i.customerAddress=o.optString("customerAddress","");i.customerCommercialRegister=o.optString("customerCommercialRegister","");i.customerTaxId=o.optString("customerTaxId","");i.vatRate=o.optDouble("vatRate",17);i.fiscalStamp=o.optDouble("fiscalStamp",0);i.paymentMethod=o.optString("paymentMethod","نقدا");JSONArray a=o.optJSONArray("lines");if(a!=null)for(int n=0;n<a.length();n++)i.lines.add(InvoiceLine.fromJson(a.optJSONObject(n)));return i;}
+}

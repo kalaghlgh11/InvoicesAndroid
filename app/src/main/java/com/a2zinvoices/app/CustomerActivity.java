@@ -1,0 +1,10 @@
+package com.a2zinvoices.app;
+import android.os.*;import android.app.*;import android.view.*;import android.widget.*;import java.util.*;
+public class CustomerActivity extends BaseActivity{
+ EditText name,activity,address,phone,cr,tax;LinearLayout list;int editing=-1;
+ public void onCreate(Bundle b){super.onCreate(b);setup("الزبائن");name=field("اسم الزبون *");activity=field("النشاط");address=field("العنوان");phone=field("الهاتف");cr=field("رقم السجل التجاري");tax=field("الرقم الجبائي");button("حفظ",v->save());button("مسح الحقول",v->clear());list=new LinearLayout(this);list.setOrientation(LinearLayout.VERTICAL);root.addView(list);refresh();}
+ void save(){if(name.getText().toString().trim().isEmpty()){msg("الرجاء إدخال اسم الزبون.");return;}Customer c=editing>=0?DataStore.customers.get(editing):new Customer();c.name=name.getText().toString().trim();c.activity=activity.getText().toString().trim();c.address=address.getText().toString().trim();c.phone=phone.getText().toString().trim();c.commercialRegister=cr.getText().toString().trim();c.taxId=tax.getText().toString().trim();if(editing<0)DataStore.customers.add(c);DataStore.saveCustomers();clear();refresh();}
+ void clear(){editing=-1;name.setText("");activity.setText("");address.setText("");phone.setText("");cr.setText("");tax.setText("");}
+ void refresh(){list.removeAllViews();for(int i=0;i<DataStore.customers.size();i++){final int k=i;Button b=new Button(this);b.setText(DataStore.customers.get(i).name+"   ✎");b.setOnClickListener(v->edit(k));list.addView(b);}}
+ void edit(int k){editing=k;Customer c=DataStore.customers.get(k);name.setText(c.name);activity.setText(c.activity);address.setText(c.address);phone.setText(c.phone);cr.setText(c.commercialRegister);tax.setText(c.taxId);new AlertDialog.Builder(this).setTitle("إدارة الزبون").setMessage(c.name).setPositiveButton("حذف",(d,w)->{DataStore.customers.remove(k);DataStore.saveCustomers();clear();refresh();}).setNegativeButton("تعديل",null).show();}
+}

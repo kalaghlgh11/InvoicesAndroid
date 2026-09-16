@@ -1,0 +1,11 @@
+package com.a2zinvoices.app;
+import android.os.*;import android.app.*;import android.view.*;import android.widget.*;import java.util.*;
+public class ProductActivity extends BaseActivity{
+ EditText name,unit,price,stock;LinearLayout list;int editing=-1;
+ public void onCreate(Bundle b){super.onCreate(b);setup("السلع والمخزون");name=field("تعيين السلعة *");unit=field("الوحدة (قطعة، كيس، متر...)");price=field("سعر الوحدة");stock=field("الكمية في المخزون");button("حفظ",v->save());button("مسح الحقول",v->clear());list=new LinearLayout(this);list.setOrientation(LinearLayout.VERTICAL);root.addView(list);refresh();}
+ void save(){if(name.getText().toString().trim().isEmpty()){msg("الرجاء إدخال تعيين السلعة.");return;}double p=parse(price.getText().toString()),s=parse(stock.getText().toString());if(p<0){msg("سعر غير صحيح.");return;}Product x=editing>=0?DataStore.products.get(editing):new Product();x.name=name.getText().toString().trim();x.unit=unit.getText().toString().trim().isEmpty()?"قطعة":unit.getText().toString().trim();x.unitPrice=p;x.stock=s;if(editing<0)DataStore.products.add(x);DataStore.saveProducts();clear();refresh();}
+ double parse(String s){try{return Double.parseDouble(s.replace(',','.'));}catch(Exception e){return 0;}}
+ void clear(){editing=-1;name.setText("");unit.setText("");price.setText("");stock.setText("");}
+ void refresh(){list.removeAllViews();for(int i=0;i<DataStore.products.size();i++){final int k=i;Button b=new Button(this);b.setText(DataStore.products.get(i).name+" | "+DataStore.products.get(i).unit+" | "+DataStore.products.get(i).unitPrice);b.setOnClickListener(v->edit(k));list.addView(b);}}
+ void edit(int k){editing=k;Product p=DataStore.products.get(k);name.setText(p.name);unit.setText(p.unit);price.setText(String.valueOf(p.unitPrice));stock.setText(String.valueOf(p.stock));new AlertDialog.Builder(this).setTitle("إدارة السلعة").setMessage(p.name).setPositiveButton("حذف",(d,w)->{DataStore.products.remove(k);DataStore.saveProducts();clear();refresh();}).setNegativeButton("تعديل",null).show();}
+}

@@ -1,0 +1,20 @@
+plugins { id 'com.android.application' }
+
+android {
+    namespace 'com.a2zinvoices.app'
+    compileSdk 35
+
+    defaultConfig {
+        applicationId 'com.a2zinvoices.app'
+        minSdk 23
+        targetSdk 35
+        versionCode 1
+        versionName '1.0'
+    }
+
+    buildTypes {
+        release { minifyEnabled false }
+    }
+}
+
+dependencies { implementation 'androidx.core:core:1.13.1' }
